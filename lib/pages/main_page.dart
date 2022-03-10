@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cat_api/pages/home_page.dart';
 import 'package:cat_api/pages/search_page.dart';
+import 'package:cat_api/pages/upload_page.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MainPage extends StatefulWidget {
   static const String id = "/main_page";
@@ -12,6 +16,18 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   PageController controller = PageController();
+  File? _image;
+
+  void getImage() async {
+    var result = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(result != null) {
+      setState(() {
+        _image = File(result.path);
+      });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => UploadPage(file: _image,)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +43,7 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: getImage,
         child: Icon(Icons.add, size: 30,),
         backgroundColor: Colors.blueAccent,
       ),
